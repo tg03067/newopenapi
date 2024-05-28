@@ -1,17 +1,15 @@
 package com.green.webclientfstv;
 
+import com.green.webclientfstv.common.ResultDto;
 import com.green.webclientfstv.model.FsvGetReq;
-import com.green.webclientfstv.model.FsvGetRes;
+import com.green.webclientfstv.model.FsvEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,7 +19,22 @@ public class WebClientFsvController {
     private final WebClientService service;
 
     @GetMapping
-    public List<FsvGetRes> getFsv(@ParameterObject @ModelAttribute FsvGetReq q){
-        return service.getFsv(q);
+    public ResultDto<List<FsvEntity>> getFsv(@ParameterObject @ModelAttribute FsvGetReq q){
+        List<FsvEntity> list = service.getFsv(q);
+        return ResultDto.<List<FsvEntity>>builder().
+                status(HttpStatus.OK).
+                message(HttpStatus.OK.toString()).
+                data(list).
+                build();
+    }
+
+    @PostMapping
+    public ResultDto<Integer> postFsv(@RequestBody FsvGetReq q){
+        int result = service.insFsv(q);
+        return ResultDto.<Integer>builder().
+                status(HttpStatus.OK).
+                message(HttpStatus.OK.toString()).
+                data(result).
+                build();
     }
 }
